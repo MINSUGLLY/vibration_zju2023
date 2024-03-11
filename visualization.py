@@ -1,0 +1,55 @@
+'''
+默认参数(其中边界条件 0自由 1简支 2固支)
+
+name = 'beam'
+
+梁长度 l = 1
+梁宽度(关于x的函数) b = lambda x : 0.1
+梁高度(关于x的函数) h = lambda x : 0.1
+梁密度(关于x的函数) rho = lambda x : 7850
+梁杨氏模量E(关于x的函数) E= lambda x : 2e11
+外加载荷(关于x和t的函数) 默认情况为右端受到冲击 f = lambda x, t : 1e8 if x > 0.99*l and x < l and t > 0 and t < 0.001 else 0 
+
+由于 两端自由 和 一端简支一端自由 梁处于不稳定状态， 求解时会造成错误，因此限定两端边界条件之和应不小于2
+左边界 bdL = 2
+右边界 bdR = 0
+
+以下参数不建议修改，由于程序没有进行合理的优化，所以计算效率较低，减少步长会导致计算量极大程度增加
+同时，如果修改以下变量，需要对js文件中 x轴范围 和 t的取值范围 进行相应的修改
+有限元网格步长 x_step=0.25
+最大时间 t_end=0.1
+时间步长 t_step=1e-5
+
+模态叠加法所需时间较长，在默认参数条件下可能需要3-5分钟左右完成计算
+另外两种迭代方法所需时间相对较短
+
+
+
+可视化
+重要：由于不同电脑打开浏览器的操作方式不同，所以可能运行程序后可视化界面不会自动弹出，在程序运行完成后，手动打开index.html文件即可
+功能：1. 实现了模态叠加、Newark-beta、Wilson-theta三种方法的可视化，画在同一张图表中
+     2. 点击界面任意部位可以实现播放的停止和进行
+     3. 在界面的任意位置进行拖动，可以查看不同时间的振动状态
+     4. 鼠标悬浮在图例上可以关注某一特定方法的振动情况
+'''
+
+
+from src.vibration import *
+
+# 默认参数
+name = 'beam'
+l = 1
+b = lambda x : 0.1
+h = lambda x : 0.1
+rho = lambda x : 7850
+E = lambda x : 2e11
+f = lambda x, t : 1e8 if x > 0.99*l and x < l and t > 0 and t < 0.001 else 0
+bdL = 2
+bdR = 0
+x_step=0.25
+t_end=0.1
+t_step=1e-5
+
+
+beam = FEM(name=name, l=l, b=b, h=h, rho=rho, E=E, f=f, bdL=bdL, bdR=bdR, x_step=x_step, t_end=t_end, t_step=t_step)
+beam.draw()
